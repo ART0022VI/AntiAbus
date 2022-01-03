@@ -47,26 +47,12 @@ namespace AntiAbus
                 effect = 2,
                 heal = 5
             },
-            ["gladcat"] = new Admin()
-            {
-                give = 3,
-                force = 3,
-                effect = 1,
-                heal = 3
-            },
             ["admin"] = new Admin()
             {
                 give = 2,
                 force = 2,
                 effect = 0,
                 heal = 2
-            },
-            ["vip"] = new Admin()
-            {
-                give = 2,
-                force = 1,
-                effect = 0,
-                heal = 1
             }
         };
         public class Admin
