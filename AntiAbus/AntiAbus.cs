@@ -41,10 +41,14 @@ namespace AntiAbus
             {
                 if (!(ev.CommandSender.SenderId == "1"))
                 {
-                    if (!CustomConfig.admins.ContainsKey(ev.CommandSender.SenderId) && CustomConfig.admins.ContainsKey($"{ev.Player.GroupName}"))
+                    if (CustomConfig.admins.ContainsKey($"{ev.Player.GroupName}"))
                     {
-                        CustomConfig.admins.Add(ev.CommandSender.SenderId, new Admin());
+                        if (!CustomConfig.admins.ContainsKey(ev.CommandSender.SenderId))
+                        {
+                            CustomConfig.admins.Add(ev.CommandSender.SenderId, new Admin());
+                        }
                     }
+                    else return;
                     if (!Round.Started)
                     {
                         if (CustomConfig.IsRoundNotStarted)
