@@ -31,16 +31,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\..\файлы\Assembly-CSharp-firstpass.dll</HintPath>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\файлы\Qurre\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
+    <Reference Include="Assembly-CSharp_publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\файлы\Qurre\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
       <HintPath>..\..\..\..\файлы\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="Qurre">
+    <Reference Include="Qurre, Version=1.14.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\файлы\Qurre\Qurre.dll</HintPath>
     </Reference>
     <Reference Include="System" />

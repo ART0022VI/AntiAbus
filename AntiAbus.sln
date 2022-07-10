@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiAbus", "AntiAbus\AntiAbus.csproj", "{A990433E-1E0E-47E6-B09A-E501065D1068}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A990433E-1E0E-47E6-B09A-E501065D1068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A990433E-1E0E-47E6-B09A-E501065D1068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A990433E-1E0E-47E6-B09A-E501065D1068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A990433E-1E0E-47E6-B09A-E501065D1068}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A89B4FD-9E55-4714-82D6-5E7AE49ADD9C}
+	EndGlobalSection
+EndGlobal
