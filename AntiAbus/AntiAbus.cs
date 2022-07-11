@@ -94,13 +94,14 @@ namespace AntiAbus
                     }
                 }
                 // Перед началом раунда
-                //if (Round.ElapsedTime.Minutes < CustomConfig.NeedTimeMinutes)
-                //{
-                //    ev.ReplyMessage = $"<color=red>Время > {CustomConfig.Wait} {CustomConfig.NeedTimeMinutes * 60 - Round.ElapsedTime.Seconds} {CustomConfig.Seconds}</color>";
-                //    ev.Success = false;
-                 //   ev.Allowed = false;
-                //    return;
-                //}
+                if (Round.ElapsedTime.Minutes < 1) // CustomConfig.NeedTimeMinutes
+                {
+                    //ev.ReplyMessage = $"<color=red>Время > {CustomConfig.Wait} {CustomConfig.NeedTimeMinutes * 60 - Round.ElapsedTime.Seconds} {CustomConfig.Seconds}</color>";
+                    ev.ReplyMessage = "Подождите 1 минуту от старта раунда.";
+                    ev.Success = false;
+                    ev.Allowed = false;
+                    return;
+                }
                 // Ввод команды с админ панели
                 switch (ev.Name)
                 {
@@ -111,6 +112,13 @@ namespace AntiAbus
                             if (ev.Args[1] == "16")
                             {
                                 ev.ReplyMessage = CustomConfig.GiveHidMessage;
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
+                            }
+                            if (ev.Player.Team == Team.SCP)
+                            {
+                                ev.ReplyMessage = "<color=red>У SCP нет рук!</color>";
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
@@ -150,6 +158,13 @@ namespace AntiAbus
                             }
                             else
                             {
+                                ev.ReplyMessage = "Выдан эффект на 10 секунд.";
+                                ev.Success = true;
+                                ev.Allowed = true;
+                                Timing.CallDelayed(10, () =>
+                                {
+                                    ev.Player.DisableAllEffects();
+                                });
                                 CustomConfig.admins[ev.CommandSender.SenderId].effect++;
                             }
                         }
@@ -157,15 +172,33 @@ namespace AntiAbus
                     // Выдача ноуклипа
                     case "noclip":
                         {
-                            ev.ReplyMessage = "Извините, донатеры, КотоХлеб выключил Ноуклип.";
-                            ev.Success = false;
-                            ev.Allowed = false;
+                            if (ev.Args[1] == "enable")
+                            {
+                                if (ev.Player.Noclip)
+                                {
+                                    ev.ReplyMessage = "У вас уже есть ноуклип.";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                }
+                                ev.Player.Noclip = true;
+                                ev.ReplyMessage = "Выдан ноуклип на 10 секунд.";
+                                ev.Success = true;
+                                ev.Allowed = false;
+                                Timing.CallDelayed(10, () =>
+                                {
+                                    GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id}. disable", ev.Player.Sender);
+                                });
+                            }
                         }
                         break;
                     // Выдача ноуклипа
                     case "god":
                         {
-                            ev.ReplyMessage = "Извините, донатеры, КотоХлеб выключил Годмод.";
+                            ev.ReplyMessage = "Godmod выдан на 10 секунд.";
+                            Timing.CallDelayed(10, () =>
+                            {
+                                ev.Player.GodMode = false;
+                            });
                             ev.Success = false;
                             ev.Allowed = false;
                         }
@@ -173,7 +206,6 @@ namespace AntiAbus
                     // Спавн отрядов
                     case "server_event":
                         {
-                            //Log.Info($"{ev.Name} {ev.Args[0]}");
                             if (ev.Args[0].ToLower() == "force_mtf_respawn" || ev.Args[0].ToLower() == "force_ci_respawn")
                             {
                                 if (CustomConfig.admins[ev.CommandSender.SenderId].call >= CustomConfig.admins[$"{ev.Player.GroupName}"].call)
