@@ -24,8 +24,8 @@ namespace AntiAbus
         public string RoundWaitingMessage { get; set; } = "<color=red>Раунд > Раунд ещё не начался!</color>"; // "<color=red>Round > The round has not started!</color>";
         [Description("RA message before the round start.")]
         public string RoundEndedMessage { get; set; } = "<color=red>Раунд > Раунд ещё не закончился!</color>"; // "<color=red>Round > The round has ended!</color>";
-        [Description("RA give MicroHid message.")]
-        public string GiveHidMessage { get; set; } = "<color=red>Предметы > На карте уже есть МикроХид!</color>"; // "<color=red>Give > There is only one MicroHid on the map!</color>";
+        [Description("RA block giving items message.")]
+        public string BlockItemMessage { get; set; } = "<color=red>Предметы > Вы не можете получить эти вещи!</color>"; // "<color=red>Give > There is only one MicroHid on the map!</color>";
         [Description("RA give limit message.")]
         public string LimitGiveMessage { get; set; } = "<color=red>Предметы > Вы исчерпали свой лимит выдачи предметов!</color>"; // "<color=red>Give > The limit for issuing items has been exhausted!</color>";
         [Description("RA force limit message.")]
@@ -36,6 +36,13 @@ namespace AntiAbus
         public string ForceMTForChaosMessage { get; set; } = "<color=red>Отряды > Вы исчерпали свой лимит на вызов отрядов Мог/Хаос</color>"; // "<color=red>MTF > You can't spawn MTF</color>";
         //[Description("RA force CI message.")]
         //public string ForceCIMessage { get; set; } = "<color=red>ХАОС > Ты не можешь вызвать Хаоситов</color>"; // "<color=red>CI > You can't spawn CI</color>";
+        // какие предметы не допустимы для донатеров
+        public List<ItemType> BlockItems { get; set; } = new List<ItemType>()
+        {
+            ItemType.MicroHID,
+            ItemType.SCP2176,
+            ItemType.ParticleDisruptor
+        };
         [Description("RA using FF message.")]
         public string FFMessage { get; set; } = "<color=red>ФФ > Вы не можете включить 'Огонь по Своим'</color>"; // "<color=red>FF > You can 't turn FF</color>";
         [Description("How many seconds do need to wait for the admin panel to work?")]
@@ -50,7 +57,10 @@ namespace AntiAbus
                 force = 4,
                 effect = 5,
                 heal = 1,
-                call = 2
+                call = 2,
+                god = 1,
+                noclip = 3,
+                bypass = 1
             },
             ["gladcat"] = new Admin()
             {
@@ -58,7 +68,10 @@ namespace AntiAbus
                 force = 3,
                 effect = 2,
                 heal = 1,
-                call = 1
+                call = 1,
+                god = 1,
+                noclip = 2,
+                bypass = 1
             },
             ["admin"] = new Admin()
             {
@@ -66,7 +79,10 @@ namespace AntiAbus
                 force = 3,
                 effect = 1,
                 heal = 1,
-                call = 0
+                call = 0,
+                god = 0,
+                noclip = 1,
+                bypass = 0
             },
             ["vip"] = new Admin()
             {
@@ -74,7 +90,10 @@ namespace AntiAbus
                 force = 1,
                 effect = 0,
                 heal = 0,
-                call = 0
+                call = 0,
+                god = 0,
+                noclip = 0,
+                bypass = 0
             }
         };
         public class Admin
@@ -89,6 +108,11 @@ namespace AntiAbus
 
             public int call { get; set; }
 
+            public int god { get; set; }
+
+            public int noclip { get; set; }
+            public int bypass { get; set; }
+
             public Admin()
             {
                 this.give = 0;
@@ -96,6 +120,9 @@ namespace AntiAbus
                 this.effect = 0;
                 this.heal = 0;
                 this.call = 0;
+                this.god = 0;
+                this.noclip = 0;
+                this.bypass = 0;
             }
         }
     }

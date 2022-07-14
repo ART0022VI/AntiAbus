@@ -33,25 +33,25 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\Qurre\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\Qurre\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\Qurre\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\Qurre\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\Mirror.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="Qurre, Version=1.14.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\Qurre\Qurre.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\Qurre\Qurre.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Users\РОМАН\Desktop\файлы\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\Рабочий стол\файлы\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

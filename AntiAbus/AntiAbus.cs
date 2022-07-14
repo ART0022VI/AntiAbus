@@ -59,6 +59,7 @@ namespace AntiAbus
         }
         public void OnSendRA(SendingRAEvent ev)
         {
+            Log.Info(ev.Name);
             // Добавление админа в конфиги
             AddDonatorAdmin(ev);
             // Содержится ли админ в конфигах
@@ -109,9 +110,9 @@ namespace AntiAbus
                     case "give":
                         {
                             // Пылесос
-                            if (ev.Args[1] == "16")
+                            if (CustomConfig.BlockItems.Contains((ItemType)byte.Parse(ev.Args[1])))
                             {
-                                ev.ReplyMessage = CustomConfig.GiveHidMessage;
+                                ev.ReplyMessage = CustomConfig.BlockItemMessage;
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
@@ -174,17 +175,20 @@ namespace AntiAbus
                         {
                             if (ev.Args[1] == "enable")
                             {
-                                if (ev.Player.Noclip)
+                                if (CustomConfig.admins[ev.CommandSender.SenderId].noclip >= CustomConfig.admins[$"{ev.Player.GroupName}"].noclip)
                                 {
-                                    ev.ReplyMessage = "У вас уже есть ноуклип.";
+                                    ev.ReplyMessage = "Вы достаточно использовали Noclip.";
                                     ev.Success = false;
                                     ev.Allowed = false;
+                                    return;
                                 }
+                                CustomConfig.admins[ev.CommandSender.SenderId].noclip++;
                                 ev.Player.Noclip = true;
-                                ev.ReplyMessage = "Выдан ноуклип на 10 секунд.";
+                                ev.ReplyMessage = "Выдан ноуклип на 15 секунд.";
                                 ev.Success = true;
                                 ev.Allowed = false;
-                                Timing.CallDelayed(10, () =>
+
+                                Timing.CallDelayed(15, () =>
                                 {
                                     GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id}. disable", ev.Player.Sender);
                                 });
@@ -194,13 +198,47 @@ namespace AntiAbus
                     // Выдача ноуклипа
                     case "god":
                         {
-                            ev.ReplyMessage = "Godmod выдан на 10 секунд.";
-                            Timing.CallDelayed(10, () =>
+                            if (CustomConfig.admins[ev.CommandSender.SenderId].god >= CustomConfig.admins[$"{ev.Player.GroupName}"].god)
+                            {
+                                ev.ReplyMessage = "Вы достаточно использовали Godmod.";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
+                            }
+                            CustomConfig.admins[ev.CommandSender.SenderId].god++;
+                            ev.Player.GodMode = true;
+
+                            ev.ReplyMessage = "Godmod выдан на 15 секунд.";
+                            ev.Success = true;
+                            ev.Allowed = false;
+
+                            Timing.CallDelayed(15, () =>
                             {
                                 ev.Player.GodMode = false;
                             });
-                            ev.Success = false;
+                        }
+                        break;
+                    // Возможность открывать двери без ключей
+                    case "bypass":
+                        {
+                            if (CustomConfig.admins[ev.CommandSender.SenderId].bypass >= CustomConfig.admins[$"{ev.Player.GroupName}"].bypass)
+                            {
+                                ev.ReplyMessage = "Вы достаточно использовали Bypass.";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
+                            }
+                            CustomConfig.admins[ev.CommandSender.SenderId].bypass++;
+                            ev.Player.BypassMode = true;
+
+                            ev.ReplyMessage = "Bypass выдан на 15 секунд.";
+                            ev.Success = true;
                             ev.Allowed = false;
+
+                            Timing.CallDelayed(15, () =>
+                            {
+                                ev.Player.BypassMode = false;
+                            });
                         }
                         break;
                     // Спавн отрядов
@@ -220,12 +258,17 @@ namespace AntiAbus
                                     CustomConfig.admins[ev.CommandSender.SenderId].call++;
                                 }
                             }
+                            else
+                            {
+                                ev.ReplyMessage = "Донатеры не могут перезапускать раунд.";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                            }
                         }
                         break;
                     // Огонь по своим
                     case "setconfig":
                         {
-                            //Log.Info($"{ev.Name} {ev.Args[0]}");
                             ev.Allowed = false;
                             ev.Success = false;
                             ev.ReplyMessage = CustomConfig.FFMessage;
@@ -377,6 +420,27 @@ namespace AntiAbus
                                 ev.ReplyMessage = $"<color=green>Хилка > Вам было выдано {hp} ХП.</color>";
                                 CustomConfig.admins[ev.CommandSender.SenderId].heal++;
                             }
+                        }
+                        break;
+                    case "roundlock":
+                        {
+                            ev.ReplyMessage = $"Донатеры не могут блокировать раунд.";
+                            ev.Allowed = false;
+                            ev.Success = false;
+                        }
+                        break;
+                    case "lobbylock":
+                        {
+                            ev.ReplyMessage = $"Донатеры не могут блокировать раунд.";
+                            ev.Allowed = false;
+                            ev.Success = false;
+                        }
+                        break;
+                    case "open":
+                        {
+                            ev.ReplyMessage = $"Донатеры не могут открывать двери.";
+                            ev.Allowed = false;
+                            ev.Success = false;
                         }
                         break;
                     default: return;
