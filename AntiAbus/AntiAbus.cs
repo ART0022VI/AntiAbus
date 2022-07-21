@@ -20,6 +20,7 @@ namespace AntiAbus
         public override void Enable() => RegisterEvents();
         public override void Disable() => UnregisterEvents();
         public Config CustomConfig { get; private set; }
+        public bool TeamIsRespawning = false;
         public void RegisterEvents()
         {
             CustomConfig = new Config();
@@ -28,6 +29,7 @@ namespace AntiAbus
 
             Qurre.Events.Server.SendingRA += OnSendRA;
             Qurre.Events.Round.Restart += OnRestart;
+            Qurre.Events.Round.TeamRespawn += OnTeamRespawn;
         }
         public void UnregisterEvents()
         {
@@ -36,11 +38,10 @@ namespace AntiAbus
 
             Qurre.Events.Server.SendingRA -= OnSendRA;
             Qurre.Events.Round.Restart -= OnRestart;
+            Qurre.Events.Round.TeamRespawn -= OnTeamRespawn;
         }
-        public void OnRestart()
-        {
-            CustomConfig.Reload();
-        }
+        public void OnRestart() => CustomConfig.Reload();
+        public void OnTeamRespawn(TeamRespawnEvent ev) => TeamIsRespawning = true;
         public void AddDonatorAdmin(SendingRAEvent ev)
         {
             // Если админ не хост
@@ -94,11 +95,9 @@ namespace AntiAbus
                         return;
                     }
                 }
-                // Перед началом раунда
-                if (Round.ElapsedTime.Minutes < 1) // CustomConfig.NeedTimeMinutes
+                if (CustomConfig.DoTimeAfterRoundStarted && Round.ElapsedTime.Minutes < CustomConfig.NeedTimeMinutes)
                 {
-                    //ev.ReplyMessage = $"<color=red>Время > {CustomConfig.Wait} {CustomConfig.NeedTimeMinutes * 60 - Round.ElapsedTime.Seconds} {CustomConfig.Seconds}</color>";
-                    ev.ReplyMessage = "Подождите 1 минуту от старта раунда.";
+                    ev.ReplyMessage = $"Подождите {CustomConfig.NeedTimeMinutes} минуту от старта раунда.";
                     ev.Success = false;
                     ev.Allowed = false;
                     return;
@@ -137,6 +136,41 @@ namespace AntiAbus
                     // Выдача ролей
                     case "forceclass":
                         {
+                            switch(ev.Args[1])
+                            {
+                                // SCP class
+                                case "0":
+                                case "3":
+                                case "5":
+                                case "7":
+                                case "9":
+                                case "10":
+                                case "16":
+                                case "17":
+                                    {
+                                        ev.ReplyMessage = "Вы не можете стать SCP!";
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                        return;
+                                    }
+                                // MTF and CI class
+                                case "4":
+                                case "8":
+                                case "11":
+                                case "12":
+                                case "13":
+                                case "18":
+                                case "19":
+                                case "20":
+                                    {
+                                        if (TeamIsRespawning) break;
+                                        ev.ReplyMessage = "Подождите, пока отряды не заспавнятся!";
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                        return;
+                                    }
+                                default: break;
+                            }
                             if (CustomConfig.admins[ev.CommandSender.SenderId].force >= CustomConfig.admins[$"{ev.Player.GroupName}"].force)
                             {
                                 ev.ReplyMessage = CustomConfig.LimitForceMessage;
@@ -244,23 +278,32 @@ namespace AntiAbus
                     // Спавн отрядов
                     case "server_event":
                         {
-                            if (ev.Args[0].ToLower() == "force_mtf_respawn" || ev.Args[0].ToLower() == "force_ci_respawn")
+                            if (CustomConfig.DoTeamRespawn)
                             {
-                                if (CustomConfig.admins[ev.CommandSender.SenderId].call >= CustomConfig.admins[$"{ev.Player.GroupName}"].call)
+                                if (ev.Args[0].ToLower() == "force_mtf_respawn" || ev.Args[0].ToLower() == "force_ci_respawn")
                                 {
-                                    ev.ReplyMessage = CustomConfig.ForceMTForChaosMessage;
-                                    ev.Success = false;
-                                    ev.Allowed = false;
+                                    if (CustomConfig.admins[ev.CommandSender.SenderId].call >= CustomConfig.admins[$"{ev.Player.GroupName}"].call)
+                                    {
+                                        ev.ReplyMessage = CustomConfig.ForceMTForChaosMessage;
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                    }
+                                    else
+                                    {
+                                        ev.ReplyMessage = "<color=green>Отряды > Вы вызвали отряды МОГ или Хаос</color>";
+                                        CustomConfig.admins[ev.CommandSender.SenderId].call++;
+                                    }
                                 }
                                 else
                                 {
-                                    ev.ReplyMessage = "<color=green>Отряды > Вы вызвали отряды МОГ или Хаос</color>";
-                                    CustomConfig.admins[ev.CommandSender.SenderId].call++;
+                                    ev.ReplyMessage = "Донатеры не могут перезапускать раунд.";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
                                 }
                             }
                             else
                             {
-                                ev.ReplyMessage = "Донатеры не могут перезапускать раунд.";
+                                ev.ReplyMessage = "Вы не можете спавнить отряды.";
                                 ev.Success = false;
                                 ev.Allowed = false;
                             }
@@ -443,7 +486,13 @@ namespace AntiAbus
                             ev.Success = false;
                         }
                         break;
-                    default: return;
+                    default:
+                        {
+                            ev.ReplyMessage = $"Нельзя использовать эту команду сервера.";
+                            ev.Allowed = false;
+                            ev.Success = false;
+                        }
+                        break;
                 }
             }
         }

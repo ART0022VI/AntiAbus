@@ -34,9 +34,6 @@ namespace AntiAbus
         public string LimitEffectMessage { get; set; } = "<color=red>Эффекты > Вы исчерпали свой лимит выдачи эффектов</color>"; // "<color=red>Effect > The limit for issuing effects has been exhausted!</color>";
         [Description("RA force MTF message.")]
         public string ForceMTForChaosMessage { get; set; } = "<color=red>Отряды > Вы исчерпали свой лимит на вызов отрядов Мог/Хаос</color>"; // "<color=red>MTF > You can't spawn MTF</color>";
-        //[Description("RA force CI message.")]
-        //public string ForceCIMessage { get; set; } = "<color=red>ХАОС > Ты не можешь вызвать Хаоситов</color>"; // "<color=red>CI > You can't spawn CI</color>";
-        // какие предметы не допустимы для донатеров
         public List<ItemType> BlockItems { get; set; } = new List<ItemType>()
         {
             ItemType.MicroHID,
@@ -46,7 +43,11 @@ namespace AntiAbus
         [Description("RA using FF message.")]
         public string FFMessage { get; set; } = "<color=red>ФФ > Вы не можете включить 'Огонь по Своим'</color>"; // "<color=red>FF > You can 't turn FF</color>";
         [Description("How many seconds do need to wait for the admin panel to work?")]
-        public int NeedTimeMinutes { get; set; } = 3;
+        public int NeedTimeMinutes { get; set; } = 1;
+        [Description("Давать возможность донатерам спавнить отряды?")] // Give donaters the opportunity to spawn squads?
+        public bool DoTeamRespawn { get; set; } = false;
+        [Description("Делать ожидание использования админ панелью после начала раунда?")] // Should I wait for the admin panel to be used after the start of the round?
+        public bool DoTimeAfterRoundStarted { get; set; } = false;
         [Description("Dictionary: Admin, effect, force, give, heal?")]
 
         public Dictionary<string, Admin> admins { get; set; } = new Dictionary<string, Admin>()
@@ -59,7 +60,7 @@ namespace AntiAbus
                 heal = 1,
                 call = 2,
                 god = 1,
-                noclip = 3,
+                noclip = 2,
                 bypass = 1
             },
             ["gladcat"] = new Admin()
@@ -70,7 +71,7 @@ namespace AntiAbus
                 heal = 1,
                 call = 1,
                 god = 1,
-                noclip = 2,
+                noclip = 1,
                 bypass = 1
             },
             ["admin"] = new Admin()
@@ -81,7 +82,7 @@ namespace AntiAbus
                 heal = 1,
                 call = 0,
                 god = 0,
-                noclip = 1,
+                noclip = 0,
                 bypass = 0
             },
             ["vip"] = new Admin()
