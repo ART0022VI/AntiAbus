@@ -108,6 +108,30 @@ namespace AntiAbus
                     // Выдача предметов
                     case "give":
                         {
+                            if (Round.ElapsedTime.Minutes < 3)
+                            {
+                                switch(byte.Parse(ev.Args[1]))
+                                {
+                                    case 13: 
+                                    case 20: 
+                                    case 21:
+                                    case 23:
+                                    case 24:
+                                    case 25:
+                                    case 30:
+                                    case 31:
+                                    case 39:
+                                    case 40:
+                                    case 41:
+                                    case 47:
+                                        {
+                                            ev.ReplyMessage = $"Огнестрел ждите 3 минуты от старта раунда.";
+                                            ev.Success = false;
+                                            ev.Allowed = false;
+                                        }
+                                        break;
+                                }
+                            }
                             // Пылесос
                             if (CustomConfig.BlockItems.Contains((ItemType)byte.Parse(ev.Args[1])))
                             {
