@@ -28,6 +28,7 @@ namespace AntiAbus
             if (!CustomConfig.IsEnable) return;
 
             Qurre.Events.Server.SendingRA += OnSendRA;
+            Qurre.Events.Server.SendingConsole += OnSendConsole;
             Qurre.Events.Round.Restart += OnRestart;
             Qurre.Events.Round.TeamRespawn += OnTeamRespawn;
         }
@@ -37,6 +38,7 @@ namespace AntiAbus
             if (!CustomConfig.IsEnable) return;
 
             Qurre.Events.Server.SendingRA -= OnSendRA;
+            Qurre.Events.Server.SendingConsole -= OnSendConsole;
             Qurre.Events.Round.Restart -= OnRestart;
             Qurre.Events.Round.TeamRespawn -= OnTeamRespawn;
         }
@@ -58,6 +60,14 @@ namespace AntiAbus
                 }
             }
         }
+        public void OnSendConsole(SendingConsoleEvent ev)
+        {
+            // Содержится ли админ в конфигах
+            if (CustomConfig.admins.ContainsKey(ev.Player.Sender.SenderId))
+            {
+                ev.Allowed = false;
+            }
+        } 
         public void OnSendRA(SendingRAEvent ev)
         {
             Log.Info(ev.Name);
