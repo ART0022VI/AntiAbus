@@ -258,7 +258,8 @@ namespace AntiAbus
 
                                 Timing.CallDelayed(15, () =>
                                 {
-                                    GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id}. disable", ev.Player.Sender);
+                                    ev.Player.Noclip = false;
+                                    GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id} disable");
                                 });
                             }
                         }
@@ -359,6 +360,7 @@ namespace AntiAbus
                                 ev.ReplyMessage = "Введите size [ID] [X] [Y] [Z]";
                                 ev.Success = false;
                                 ev.Allowed = false;
+                                return;
                                 return;
                             }
                             if (ev.Args.Length != 4)

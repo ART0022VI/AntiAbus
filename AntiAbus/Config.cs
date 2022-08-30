@@ -38,7 +38,9 @@ namespace AntiAbus
         {
             ItemType.MicroHID,
             ItemType.SCP2176,
-            ItemType.ParticleDisruptor
+            ItemType.ParticleDisruptor,
+            ItemType.SCP244a,
+            ItemType.SCP244b
         };
         [Description("RA using FF message.")]
         public string FFMessage { get; set; } = "<color=red>ФФ > Вы не можете включить 'Огонь по Своим'</color>"; // "<color=red>FF > You can 't turn FF</color>";
@@ -95,7 +97,7 @@ namespace AntiAbus
                 god = 0,
                 noclip = 0,
                 bypass = 0
-            }
+            },
         };
         public class Admin
         {
