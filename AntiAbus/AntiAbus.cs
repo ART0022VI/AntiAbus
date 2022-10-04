@@ -205,6 +205,7 @@ namespace AntiAbus
                                     }
                                 default: break;
                             }
+
                             if (CustomConfig.admins[ev.CommandSender.SenderId].force >= CustomConfig.admins[$"{ev.Player.GroupName}"].force)
                             {
                                 ev.ReplyMessage = CustomConfig.LimitForceMessage;
@@ -227,14 +228,33 @@ namespace AntiAbus
                             }
                             else
                             {
-                                ev.ReplyMessage = "Выдан эффект на 10 секунд.";
-                                ev.Success = true;
-                                ev.Allowed = true;
-                                Timing.CallDelayed(10, () =>
+                                if(ev.CommandSender.Nickname == ev.Player.Nickname)
                                 {
-                                    ev.Player.DisableAllEffects();
-                                });
-                                CustomConfig.admins[ev.CommandSender.SenderId].effect++;
+                                   /* if(ev.Player.GetEffect(EffectType.Visuals939) == true)
+                                    {
+                                        Timing.CallDelayed(5, () =>
+                                        {
+                                            ev.Player.DisableAllEffects();
+                                            return;
+                                        });
+                                    }
+                                   */
+                                    ev.ReplyMessage = "Выдан эффект на 10 секунд.";
+                                    ev.Success = true;
+                                    ev.Allowed = true;
+                                    Timing.CallDelayed(10, () =>
+                                    {
+                                        ev.Player.DisableAllEffects();
+                                    });
+                                    CustomConfig.admins[ev.CommandSender.SenderId].effect++;
+                                }
+                                else
+                                {
+                                    ev.ReplyMessage = "Вы выдали запретный эффект \n" + "или вы хотели выдать его не себе!";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
                             }
                         }
                         break;
