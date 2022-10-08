@@ -226,10 +226,15 @@ namespace AntiAbus
                                 ev.Allowed = false;
                                 return;
                             }
+                            else if (ev.CommandSender.Nickname != ev.Player.Nickname)
+                            {
+                                ev.ReplyMessage = "Вы можете выдавать только себе!";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
+                            }
                             else
                             {
-                                if(ev.CommandSender.Nickname == ev.Player.Nickname)
-                                {
                                    /* if(ev.Player.GetEffect(EffectType.Visuals939) == true)
                                     {
                                         Timing.CallDelayed(5, () =>
@@ -247,14 +252,6 @@ namespace AntiAbus
                                         ev.Player.DisableAllEffects();
                                     });
                                     CustomConfig.admins[ev.CommandSender.SenderId].effect++;
-                                }
-                                else
-                                {
-                                    ev.ReplyMessage = "Вы выдали запретный эффект \n" + "или вы хотели выдать его не себе!";
-                                    ev.Success = false;
-                                    ev.Allowed = false;
-                                    return;
-                                }
                             }
                         }
                         break;
