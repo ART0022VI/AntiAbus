@@ -118,104 +118,125 @@ namespace AntiAbus
                     // Выдача предметов
                     case "give":
                         {
-                            if (Round.ElapsedTime.Minutes < 3)
+                            if(ev.CommandSender.SenderId == ev.Player.Id.ToString())
                             {
-                                switch(byte.Parse(ev.Args[1]))
+                                if (Round.ElapsedTime.Minutes < 3)
                                 {
-                                    case 13: 
-                                    case 20: 
-                                    case 21:
-                                    case 23:
-                                    case 24:
-                                    case 25:
-                                    case 30:
-                                    case 31:
-                                    case 39:
-                                    case 40:
-                                    case 41:
-                                    case 47:
-                                        {
-                                            ev.ReplyMessage = $"Огнестрел ждите 3 минуты от старта раунда.";
-                                            ev.Success = false;
-                                            ev.Allowed = false;
-                                        }
-                                        break;
+                                    switch (byte.Parse(ev.Args[1]))
+                                    {
+                                        case 13:
+                                        case 20:
+                                        case 21:
+                                        case 23:
+                                        case 24:
+                                        case 25:
+                                        case 30:
+                                        case 31:
+                                        case 39:
+                                        case 40:
+                                        case 41:
+                                        case 47:
+                                            {
+                                                ev.ReplyMessage = $"Огнестрел ждите 3 минуты от старта раунда.";
+                                                ev.Success = false;
+                                                ev.Allowed = false;
+                                            }
+                                            break;
+                                    }
                                 }
+
+                                // Пылесос
+                                if (CustomConfig.BlockItems.Contains((ItemType)byte.Parse(ev.Args[1])))
+                                {
+                                    ev.ReplyMessage = CustomConfig.BlockItemMessage;
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                if (ev.Player.Team == Team.SCP)
+                                {
+                                    ev.ReplyMessage = "<color=red>У SCP нет рук!</color>";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                if (CustomConfig.admins[ev.CommandSender.SenderId].give >= CustomConfig.admins[$"{ev.Player.GroupName}"].give)
+                                {
+                                    ev.ReplyMessage = CustomConfig.LimitGiveMessage;
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                else CustomConfig.admins[ev.CommandSender.SenderId].give++;
+                                break;
                             }
-                            // Пылесос
-                            if (CustomConfig.BlockItems.Contains((ItemType)byte.Parse(ev.Args[1])))
+                            else
                             {
-                                ev.ReplyMessage = CustomConfig.BlockItemMessage;
+                                ev.ReplyMessage = "Вы можете воздействовать только на себя!";
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
                             }
-                            if (ev.Player.Team == Team.SCP)
-                            {
-                                ev.ReplyMessage = "<color=red>У SCP нет рук!</color>";
-                                ev.Success = false;
-                                ev.Allowed = false;
-                                return;
-                            }
-                            if (CustomConfig.admins[ev.CommandSender.SenderId].give >= CustomConfig.admins[$"{ev.Player.GroupName}"].give)
-                            {
-                                ev.ReplyMessage = CustomConfig.LimitGiveMessage;
-                                ev.Success = false;
-                                ev.Allowed = false;
-                                return;
-                            }
-                            else CustomConfig.admins[ev.CommandSender.SenderId].give++;
-                        }
-                        break;
+                        } 
                     // Выдача ролей
                     case "forceclass":
                         {
-                            switch(ev.Args[1])
+                            if (ev.CommandSender.SenderId == ev.Player.Id.ToString())
                             {
-                                // SCP class
-                                case "0":
-                                case "3":
-                                case "5":
-                                case "7":
-                                case "9":
-                                case "10":
-                                case "16":
-                                case "17":
+                                    switch (ev.Args[1])
                                     {
-                                        ev.ReplyMessage = "Вы не можете стать SCP!";
-                                        ev.Success = false;
-                                        ev.Allowed = false;
-                                        return;
+                                        // SCP class
+                                        case "0":
+                                        case "3":
+                                        case "5":
+                                        case "7":
+                                        case "9":
+                                        case "10":
+                                        case "16":
+                                        case "17":
+                                            {
+                                                ev.ReplyMessage = "Вы не можете стать SCP!";
+                                                ev.Success = false;
+                                                ev.Allowed = false;
+                                                return;
+                                            }
+                                        // MTF and CI class
+                                        case "4":
+                                        case "8":
+                                        case "11":
+                                        case "12":
+                                        case "13":
+                                        case "18":
+                                        case "19":
+                                        case "20":
+                                            {
+                                                if (TeamIsRespawning) break;
+                                                ev.ReplyMessage = "Подождите, пока отряды не заспавнятся!";
+                                                ev.Success = false;
+                                                ev.Allowed = false;
+                                                return;
+                                            }
+                                        default: break;
                                     }
-                                // MTF and CI class
-                                case "4":
-                                case "8":
-                                case "11":
-                                case "12":
-                                case "13":
-                                case "18":
-                                case "19":
-                                case "20":
-                                    {
-                                        if (TeamIsRespawning) break;
-                                        ev.ReplyMessage = "Подождите, пока отряды не заспавнятся!";
-                                        ev.Success = false;
-                                        ev.Allowed = false;
-                                        return;
-                                    }
-                                default: break;
-                            }
 
-                            if (CustomConfig.admins[ev.CommandSender.SenderId].force >= CustomConfig.admins[$"{ev.Player.GroupName}"].force)
+                                    if (CustomConfig.admins[ev.CommandSender.SenderId].force >= CustomConfig.admins[$"{ev.Player.GroupName}"].force)
+                                    {
+                                        ev.ReplyMessage = CustomConfig.LimitForceMessage;
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                        return;
+                                    }
+                                    else CustomConfig.admins[ev.CommandSender.SenderId].force++;
+                                    break;
+                            }
+                            else
                             {
-                                ev.ReplyMessage = CustomConfig.LimitForceMessage;
+                                ev.ReplyMessage = "Вы можете воздействовать только на себя!";
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
                             }
-                            else CustomConfig.admins[ev.CommandSender.SenderId].force++;
                         }
-                        break;
                     // Выдача эффектов
                     case "effect":
                         {
@@ -226,7 +247,7 @@ namespace AntiAbus
                                 ev.Allowed = false;
                                 return;
                             }
-                            else if (ev.CommandSender.Nickname != ev.Player.Nickname)
+                            else if (ev.CommandSender.SenderId != ev.Player.Id.ToString())
                             {
                                 ev.ReplyMessage = "Вы можете выдавать только себе!";
                                 ev.Success = false;
@@ -252,79 +273,110 @@ namespace AntiAbus
                                         ev.Player.DisableAllEffects();
                                     });
                                     CustomConfig.admins[ev.CommandSender.SenderId].effect++;
+
                             }
+                            break;
                         }
-                        break;
                     // Выдача ноуклипа
                     case "noclip":
                         {
-                            if (ev.Args[1] == "enable")
-                            {
-                                if (CustomConfig.admins[ev.CommandSender.SenderId].noclip >= CustomConfig.admins[$"{ev.Player.GroupName}"].noclip)
+                            if(ev.CommandSender.SenderId == ev.Player.Id.ToString()) {
+                                if (ev.Args[1] == "enable")
                                 {
-                                    ev.ReplyMessage = "Вы достаточно использовали Noclip.";
-                                    ev.Success = false;
+                                    if (CustomConfig.admins[ev.CommandSender.SenderId].noclip >= CustomConfig.admins[$"{ev.Player.GroupName}"].noclip)
+                                    {
+                                        ev.ReplyMessage = "Вы достаточно использовали Noclip.";
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                        return;
+                                    }
+                                    CustomConfig.admins[ev.CommandSender.SenderId].noclip++;
+                                    ev.Player.Noclip = true;
+                                    ev.ReplyMessage = "Выдан ноуклип на 15 секунд.";
+                                    ev.Success = true;
                                     ev.Allowed = false;
-                                    return;
-                                }
-                                CustomConfig.admins[ev.CommandSender.SenderId].noclip++;
-                                ev.Player.Noclip = true;
-                                ev.ReplyMessage = "Выдан ноуклип на 15 секунд.";
-                                ev.Success = true;
-                                ev.Allowed = false;
 
-                                Timing.CallDelayed(15, () =>
-                                {
-                                    ev.Player.Noclip = false;
-                                    GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id} disable");
-                                });
+                                    Timing.CallDelayed(15, () =>
+                                    {
+                                        ev.Player.Noclip = false;
+                                        GameCore.Console.singleton.TypeCommand($"/noclip {ev.Player.Id} disable");
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                ev.ReplyMessage = "Вы можете воздействовать только на себя!";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
                             }
                         }
                         break;
                     // Выдача ноуклипа
                     case "god":
                         {
-                            if (CustomConfig.admins[ev.CommandSender.SenderId].god >= CustomConfig.admins[$"{ev.Player.GroupName}"].god)
+                            if(ev.CommandSender.SenderId == ev.Player.Id.ToString())
                             {
-                                ev.ReplyMessage = "Вы достаточно использовали Godmod.";
+                                if(CustomConfig.admins[ev.CommandSender.SenderId].god >= CustomConfig.admins[$"{ev.Player.GroupName}"].god)
+                                {
+                                        ev.ReplyMessage = "Вы достаточно использовали Godmod.";
+                                        ev.Success = false;
+                                        ev.Allowed = false;
+                                        return;
+                                    }
+                                    CustomConfig.admins[ev.CommandSender.SenderId].god++;
+                                    ev.Player.GodMode = true;
+
+                                    ev.ReplyMessage = "Godmod выдан на 15 секунд.";
+                                    ev.Success = true;
+                                    ev.Allowed = false;
+
+                                    Timing.CallDelayed(15, () =>
+                                    {
+                                        ev.Player.GodMode = false;
+                                    });
+
+                                }
+                            else
+                            {
+                                ev.ReplyMessage = "Вы можете воздействовать только на себя!";
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
                             }
-                            CustomConfig.admins[ev.CommandSender.SenderId].god++;
-                            ev.Player.GodMode = true;
-
-                            ev.ReplyMessage = "Godmod выдан на 15 секунд.";
-                            ev.Success = true;
-                            ev.Allowed = false;
-
-                            Timing.CallDelayed(15, () =>
-                            {
-                                ev.Player.GodMode = false;
-                            });
                         }
                         break;
                     // Возможность открывать двери без ключей
                     case "bypass":
                         {
-                            if (CustomConfig.admins[ev.CommandSender.SenderId].bypass >= CustomConfig.admins[$"{ev.Player.GroupName}"].bypass)
+                            if(ev.CommandSender.SenderId == ev.Player.Id.ToString())
                             {
-                                ev.ReplyMessage = "Вы достаточно использовали Bypass.";
+                                if (CustomConfig.admins[ev.CommandSender.SenderId].bypass >= CustomConfig.admins[$"{ev.Player.GroupName}"].bypass)
+                                {
+                                    ev.ReplyMessage = "Вы достаточно использовали Bypass.";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                CustomConfig.admins[ev.CommandSender.SenderId].bypass++;
+                                ev.Player.BypassMode = true;
+
+                                ev.ReplyMessage = "Bypass выдан на 15 секунд.";
+                                ev.Success = true;
+                                ev.Allowed = false;
+
+                                Timing.CallDelayed(15, () =>
+                                {
+                                    ev.Player.BypassMode = false;
+                                });
+                            }
+                            else
+                            {
+                                ev.ReplyMessage = "Вы можете воздействовать только на себя!";
                                 ev.Success = false;
                                 ev.Allowed = false;
                                 return;
                             }
-                            CustomConfig.admins[ev.CommandSender.SenderId].bypass++;
-                            ev.Player.BypassMode = true;
-
-                            ev.ReplyMessage = "Bypass выдан на 15 секунд.";
-                            ev.Success = true;
-                            ev.Allowed = false;
-
-                            Timing.CallDelayed(15, () =>
-                            {
-                                ev.Player.BypassMode = false;
-                            });
                         }
                         break;
                     // Спавн отрядов
@@ -372,32 +424,41 @@ namespace AntiAbus
                     // Изменение размера
                     case "size":
                         {
-                            if (ev.Args.Length <= 0)
+                            if (ev.CommandSender.SenderId == ev.Player.Id.ToString())
                             {
-                                ev.ReplyMessage = "Введите size [ID] [X] [Y] [Z]";
-                                ev.Success = false;
-                                ev.Allowed = false;
-                                return;
-                                return;
-                            }
-                            if (ev.Args.Length != 4)
-                            {
-                                ev.ReplyMessage = "Введите size [ID] [X] [Y] [Z]";
-                                ev.Success = false;
-                                ev.Allowed = false;
-                                return;
-                            }
-                            if (ev.Args[0] == ev.Player.Id.ToString())
-                            {
-                                if (float.Parse(ev.Args[1]) >= 0.85f && float.Parse(ev.Args[1]) <= 1.15f) // size 2 x
+                                if (ev.Args.Length <= 0)
                                 {
-                                    if (float.Parse(ev.Args[2]) >= 0.85f && float.Parse(ev.Args[1]) <= 1.15f) // size 2 x y
+                                    ev.ReplyMessage = "Введите size [ID] [X] [Y] [Z]";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                if (ev.Args.Length != 4)
+                                {
+                                    ev.ReplyMessage = "Введите size [ID] [X] [Y] [Z]";
+                                    ev.Success = false;
+                                    ev.Allowed = false;
+                                    return;
+                                }
+                                if (ev.Args[0] == ev.Player.Id.ToString())
+                                {
+                                    if (float.Parse(ev.Args[1]) >= 0.85f && float.Parse(ev.Args[1]) <= 1.15f) // size 2 x
                                     {
-                                        if (float.Parse(ev.Args[3]) >= 0.85f && float.Parse(ev.Args[3]) <= 1.15f) // size 2 x y z
+                                        if (float.Parse(ev.Args[2]) >= 0.85f && float.Parse(ev.Args[1]) <= 1.15f) // size 2 x y
                                         {
-                                            ev.Success = true;
-                                            ev.Allowed = true;
-                                            return;
+                                            if (float.Parse(ev.Args[3]) >= 0.85f && float.Parse(ev.Args[3]) <= 1.15f) // size 2 x y z
+                                            {
+                                                ev.Success = true;
+                                                ev.Allowed = true;
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                ev.ReplyMessage = "Размер не должен быть больше 1.15 или меньше 0.85";
+                                                ev.Success = false;
+                                                ev.Allowed = false;
+                                                return;
+                                            }
                                         }
                                         else
                                         {
@@ -415,16 +476,16 @@ namespace AntiAbus
                                         return;
                                     }
                                 }
-                                else
-                                {
-                                    ev.ReplyMessage = "Размер не должен быть больше 1.15 или меньше 0.85";
-                                    ev.Success = false;
-                                    ev.Allowed = false;
-                                    return;
-                                }
+                                break;
+                            }
+                            else
+                            {
+                                ev.ReplyMessage = "Вы можете только себе изменить размер.";
+                                ev.Success = false;
+                                ev.Allowed = false;
+                                return;
                             }
                         }
-                        break;
                     // Изменение масштаба
                     case "scale":
                         {
